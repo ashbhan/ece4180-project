@@ -1,6 +1,8 @@
 #ifndef COLOR_SENSOR
 #define COLOR_SENSOR
 
+enum Color { RED, GREEN, YELLOW};
+
 I2C i2c_color_sensor(p9, p10); //pins for I2C communication (SDA, SCL)
 
 int sensor_addr = 41 << 1;
@@ -26,30 +28,51 @@ void color_sensor_init()
     i2c_color_sensor.write(sensor_addr,enable_register,2,false);
 }
 
-uint32_t color_sensor()
+Color color_sensor()
 {
+    char clear_reg[1] = {148};
+    char clear_data[2] = {0,0};
+    i2c_color_sensor.write(sensor_addr,clear_reg,1, true);
+    i2c_color_sensor.read(sensor_addr,clear_data,2, false);
+
+    float clear = (((int)clear_data[1] << 8) | clear_data[0]) * 1.0f;
+
     char red_reg[1] = {150};
     char red_data[2] = {0,0};
     i2c_color_sensor.write(sensor_addr,red_reg,1, true);
     i2c_color_sensor.read(sensor_addr,red_data,2, false);
 
-    uint8_t red = (((uint32_t)red_data[1] << 8) | red_data[0]) / (256);
+    float red = (((uint32_t)red_data[1] << 8) | red_data[0]) * 1.0f;
 
     char green_reg[1] = {152};
     char green_data[2] = {0,0};
     i2c_color_sensor.write(sensor_addr,green_reg,1, true);
     i2c_color_sensor.read(sensor_addr,green_data,2, false);
 
-    uint8_t green = (((uint32_t)green_data[1] << 8) | green_data[0]) / (256);
+    float green = (((uint32_t)green_data[1] << 8) | green_data[0]) * 1.0f;
 
     char blue_reg[1] = {154};
     char blue_data[2] = {0,0};
     i2c_color_sensor.write(sensor_addr,blue_reg,1, true);
     i2c_color_sensor.read(sensor_addr,blue_data,2, false);
 
-    uint8_t blue = (((uint32_t)blue_data[1] << 8) | blue_data[0]) / (256);
+    float blue = (((uint32_t)blue_data[1] << 8) | blue_data[0]) * 1.0f;
 
-    return 256^2 * red + 256 * green + blue;
+    blue = 255 * blue / clear;
+    green = 255 * green / clear;
+    red = 255 * red / clear;
+
+    Color output;
+
+    if( 0 < blue < 255 && 0 < green < 255 && 0 < red < 255) {
+        output = GREEN;
+    } else if( 0 < blue < 255 && 0 < green < 255 && 0 < red < 255) {
+        output = YELLOW;
+    } else {
+        output = RED;
+    }
+
+    return output;
 }
 
 #endif
