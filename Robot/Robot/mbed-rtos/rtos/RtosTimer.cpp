@@ -1,5 +1,5 @@
-/* mbed simple H-bridge motor controller
- * Copyright (c) 2007-2010, sford, http://mbed.org
+/* mbed Microcontroller Library
+ * Copyright (c) 2006-2012 ARM Limited
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -16,31 +16,40 @@
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+#include "rtos/RtosTimer.h"
 
-#include "Motor.h"
+#include <string.h>
 
 #include "mbed.h"
+#include "cmsis_os.h"
+#include "platform/mbed_error.h"
 
-Motor::Motor(PinName pwm, PinName fwd, PinName rev):
-        _pwm(pwm), _fwd(fwd), _rev(rev) {
+namespace rtos {
 
-    // Set initial condition of PWM
-    _pwm.period(0.0001);
-    _pwm = 0;
+void RtosTimer::constructor(mbed::Callback<void()> func, os_timer_type type) {
+#ifdef CMSIS_OS_RTX
+    _timer.ptimer = (void (*)(const void *))Callback<void()>::thunk;
 
-    // Initial condition of output enables
-    _fwd = 0;
-    _rev = 0;
+    memset(_timer_data, 0, sizeof(_timer_data));
+    _timer.timer = _timer_data;
+#endif
+    _function = func;
+    _timer_id = osTimerCreate(&_timer, type, &_function);
 }
 
-void Motor::speed(float speed) {
-    _fwd = (speed > 0.0);
-    _rev = (speed < 0.0);
-    _pwm = abs(speed);
+osStatus RtosTimer::start(uint32_t millisec) {
+    return osTimerStart(_timer_id, millisec);
 }
 
+osStatus RtosTimer::stop(void) {
+    return osTimerStop(_timer_id);
+}
 
+RtosTimer::~RtosTimer() {
+    osTimerDelete(_timer_id);
+}
 
+}

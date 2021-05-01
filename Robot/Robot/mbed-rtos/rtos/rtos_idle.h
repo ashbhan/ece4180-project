@@ -1,5 +1,8 @@
-/* mbed simple H-bridge motor controller
- * Copyright (c) 2007-2010, sford, http://mbed.org
+
+/** \addtogroup rtos */
+/** @{*/
+/* mbed Microcontroller Library
+ * Copyright (c) 2006-2012 ARM Limited
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -16,31 +19,24 @@
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+#ifndef RTOS_IDLE_H
+#define RTOS_IDLE_H
 
-#include "Motor.h"
+#include <stddef.h>
 
-#include "mbed.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-Motor::Motor(PinName pwm, PinName fwd, PinName rev):
-        _pwm(pwm), _fwd(fwd), _rev(rev) {
+void rtos_attach_idle_hook(void (*fptr)(void));
 
-    // Set initial condition of PWM
-    _pwm.period(0.0001);
-    _pwm = 0;
-
-    // Initial condition of output enables
-    _fwd = 0;
-    _rev = 0;
+#ifdef __cplusplus
 }
+#endif
 
-void Motor::speed(float speed) {
-    _fwd = (speed > 0.0);
-    _rev = (speed < 0.0);
-    _pwm = abs(speed);
-}
+#endif
 
-
-
+/** @}*/

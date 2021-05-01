@@ -1,5 +1,5 @@
-/* mbed simple H-bridge motor controller
- * Copyright (c) 2007-2010, sford, http://mbed.org
+/* mbed Microcontroller Library
+ * Copyright (c) 2006-2012 ARM Limited
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -16,31 +16,36 @@
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
-#include "Motor.h"
+#include "rtos/rtos_idle.h"
 
-#include "mbed.h"
+static void default_idle_hook(void)
+{
+    /* Sleep: ideally, we should put the chip to sleep.
+     Unfortunately, this usually requires disconnecting the interface chip (debugger).
+     This can be done, but it would break the local file system.
+    */
+    // sleep();
+}
+static void (*idle_hook_fptr)(void) = &default_idle_hook;
 
-Motor::Motor(PinName pwm, PinName fwd, PinName rev):
-        _pwm(pwm), _fwd(fwd), _rev(rev) {
-
-    // Set initial condition of PWM
-    _pwm.period(0.0001);
-    _pwm = 0;
-
-    // Initial condition of output enables
-    _fwd = 0;
-    _rev = 0;
+void rtos_attach_idle_hook(void (*fptr)(void))
+{
+    //Attach the specified idle hook, or the default idle hook in case of a NULL pointer
+    if (fptr != NULL) {
+        idle_hook_fptr = fptr;
+    } else {
+        idle_hook_fptr = default_idle_hook;
+    }
 }
 
-void Motor::speed(float speed) {
-    _fwd = (speed > 0.0);
-    _rev = (speed < 0.0);
-    _pwm = abs(speed);
+void rtos_idle_loop(void)
+{
+    //Continuously call the idle hook function pointer
+    while (1) {
+        idle_hook_fptr();
+    }
 }
-
-
-

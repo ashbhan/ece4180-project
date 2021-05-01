@@ -1,5 +1,5 @@
-/* mbed simple H-bridge motor controller
- * Copyright (c) 2007-2010, sford, http://mbed.org
+/* mbed Microcontroller Library
+ * Copyright (c) 2006-2012 ARM Limited
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -16,31 +16,33 @@
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
+#include "rtos/Semaphore.h"
 
-#include "Motor.h"
+#include <string.h>
 
-#include "mbed.h"
+namespace rtos {
 
-Motor::Motor(PinName pwm, PinName fwd, PinName rev):
-        _pwm(pwm), _fwd(fwd), _rev(rev) {
-
-    // Set initial condition of PWM
-    _pwm.period(0.0001);
-    _pwm = 0;
-
-    // Initial condition of output enables
-    _fwd = 0;
-    _rev = 0;
+Semaphore::Semaphore(int32_t count) {
+#ifdef CMSIS_OS_RTX
+    memset(_semaphore_data, 0, sizeof(_semaphore_data));
+    _osSemaphoreDef.semaphore = _semaphore_data;
+#endif
+    _osSemaphoreId = osSemaphoreCreate(&_osSemaphoreDef, count);
 }
 
-void Motor::speed(float speed) {
-    _fwd = (speed > 0.0);
-    _rev = (speed < 0.0);
-    _pwm = abs(speed);
+int32_t Semaphore::wait(uint32_t millisec) {
+    return osSemaphoreWait(_osSemaphoreId, millisec);
 }
 
+osStatus Semaphore::release(void) {
+    return osSemaphoreRelease(_osSemaphoreId);
+}
 
+Semaphore::~Semaphore() {
+    osSemaphoreDelete(_osSemaphoreId);
+}
 
+}
