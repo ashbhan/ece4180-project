@@ -1,8 +1,6 @@
 #ifndef COLOR_SENSOR
 #define COLOR_SENSOR
 
-enum Color { RED, GREEN, YELLOW};
-
 I2C i2c_color_sensor(p9, p10); //pins for I2C communication (SDA, SCL)
 
 int sensor_addr = 41 << 1;
@@ -28,7 +26,7 @@ void color_sensor_init()
     i2c_color_sensor.write(sensor_addr,enable_register,2,false);
 }
 
-Color color_sensor()
+float color_sensor_red()
 {
     char clear_reg[1] = {148};
     char clear_data[2] = {0,0};
@@ -42,7 +40,21 @@ Color color_sensor()
     i2c_color_sensor.write(sensor_addr,red_reg,1, true);
     i2c_color_sensor.read(sensor_addr,red_data,2, false);
 
-    float red = (((uint32_t)red_data[1] << 8) | red_data[0]) * 1.0f;
+    float red = (((uint32_t)red_data[1] << 8) | red_data[0]) * 1.0f;;
+
+    red = 255 * red / clear;
+
+    return red;
+}
+
+float color_sensor_green()
+{
+    char clear_reg[1] = {148};
+    char clear_data[2] = {0,0};
+    i2c_color_sensor.write(sensor_addr,clear_reg,1, true);
+    i2c_color_sensor.read(sensor_addr,clear_data,2, false);
+
+    float clear = (((int)clear_data[1] << 8) | clear_data[0]) * 1.0f;
 
     char green_reg[1] = {152};
     char green_data[2] = {0,0};
@@ -50,6 +62,20 @@ Color color_sensor()
     i2c_color_sensor.read(sensor_addr,green_data,2, false);
 
     float green = (((uint32_t)green_data[1] << 8) | green_data[0]) * 1.0f;
+
+    green = 255 * green / clear;
+
+    return green;
+}
+
+float color_sensor_blue()
+{
+    char clear_reg[1] = {148};
+    char clear_data[2] = {0,0};
+    i2c_color_sensor.write(sensor_addr,clear_reg,1, true);
+    i2c_color_sensor.read(sensor_addr,clear_data,2, false);
+
+    float clear = (((int)clear_data[1] << 8) | clear_data[0]) * 1.0f;
 
     char blue_reg[1] = {154};
     char blue_data[2] = {0,0};
@@ -59,20 +85,8 @@ Color color_sensor()
     float blue = (((uint32_t)blue_data[1] << 8) | blue_data[0]) * 1.0f;
 
     blue = 255 * blue / clear;
-    green = 255 * green / clear;
-    red = 255 * red / clear;
 
-    Color output;
-
-    if( 0 < blue < 255 && 0 < green < 255 && 0 < red < 255) {
-        output = GREEN;
-    } else if( 0 < blue < 255 && 0 < green < 255 && 0 < red < 255) {
-        output = YELLOW;
-    } else {
-        output = RED;
-    }
-
-    return output;
+    return blue;
 }
 
 #endif
