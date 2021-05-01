@@ -26,7 +26,7 @@ void color_sensor_init()
     i2c_color_sensor.write(sensor_addr,enable_register,2,false);
 }
 
-float color_sensor_red()
+int color_sensor_red()
 {
     char clear_reg[1] = {148};
     char clear_data[2] = {0,0};
@@ -44,10 +44,10 @@ float color_sensor_red()
 
     red = 255 * red / clear;
 
-    return red;
+    return int(red);
 }
 
-float color_sensor_green()
+int color_sensor_green()
 {
     char clear_reg[1] = {148};
     char clear_data[2] = {0,0};
@@ -65,10 +65,10 @@ float color_sensor_green()
 
     green = 255 * green / clear;
 
-    return green;
+    return int(green);
 }
 
-float color_sensor_blue()
+int color_sensor_blue()
 {
     char clear_reg[1] = {148};
     char clear_data[2] = {0,0};
@@ -86,7 +86,7 @@ float color_sensor_blue()
 
     blue = 255 * blue / clear;
 
-    return blue;
+    return int(blue);
 }
 
 #endif
