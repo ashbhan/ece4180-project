@@ -2,15 +2,15 @@
 DigitalOut led2(LED2); //RED
 DigitalOut led3(LED3); //green
 DigitalOut led1(LED1);
-static XNucleo53L0A1 *board=NULL;
-enum LED_state 
+// static XNucleo53L0A1 *board=NULL;
+enum LED_state
 {
     STOPPED = 0,
     FORWARD = 1,
     TURNING = 2,
     REVERSE = 3
 };
-    
+
 LED_state led_state;
 
 Mutex lock;
@@ -37,26 +37,26 @@ union f_or_char {
 
 void LED_thread() {
     while(1){
-        switch (led_state) {
-            case STOPPED: 
-                led2 = 1;
-                led3 = 0;
-                break;
-            case FORWARD:
-                led2 = 0;
-                led3 = 1;
-                break;
-            case TURNING:
-                led2 = 0;
-                led3 = !led3;
-                Thread::wait(50);
-                break;
-            case REVERSE:
-                led3 = 0;
-                led2 = !led2;
-                Thread::wait(50);
-                break;
-        }
+    //     switch (led_state) {
+    //         case STOPPED:
+    //             led2 = 1;
+    //             led3 = 0;
+    //             break;
+    //         case FORWARD:
+    //             led2 = 0;
+    //             led3 = 1;
+    //             break;
+    //         case TURNING:
+    //             led2 = 0;
+    //             led3 = !led3;
+    //             Thread::wait(50);
+    //             break;
+    //         case REVERSE:
+    //             led3 = 0;
+    //             led2 = !led2;
+    //             Thread::wait(50);
+    //             break;
+    //     }
     }
 }
 
@@ -118,7 +118,7 @@ void blue_thread(){
                         else if ((x.f<=0.5 && x.f >= -0.5) && (y.f<=0.5 && y.f>=-0.5) && (z.f >= 0.5)){ //reverse
                             motorR.speed(-0.35);
                             motorL.speed(0.35);
-                            led_state = TURNING;                            
+                            led_state = TURNING;
                         }
                         else {
                             RightSpeed = 0.0;
@@ -135,60 +135,60 @@ void blue_thread(){
                 while(bluemod.readable()) {
                     bluemod.getc(); //clear the buffer
                 }
-            } 
-        } //else if (t.read() > 5) {
-//            motorR.speed(0);
-//            motorL.speed(0);
-//            led_state = STOPPED;
-//        }
+            }
+        } else if (t.read() > 5) {
+            motorR.speed(0);
+            motorL.speed(0);
+            led_state = STOPPED;
+        }
         //probably should put a thread::wait in here?
     }
 }
 
 int main()
 {
-    DevI2C *device_i2c = new DevI2C(VL53L0_I2C_SDA, VL53L0_I2C_SCL);
-    /* creates the 53L0A1 expansion board singleton obj */
-    board = XNucleo53L0A1::instance(device_i2c, A2, D8, D2);
-    shdn = 0; //must reset sensor for an mbed reset to work
-    wait(0.1);
-    shdn = 1;
-    wait(0.1);
+    // DevI2C *device_i2c = new DevI2C(VL53L0_I2C_SDA, VL53L0_I2C_SCL);
+    // /* creates the 53L0A1 expansion board singleton obj */
+    // board = XNucleo53L0A1::instance(device_i2c, A2, D8, D2);
+    // shdn = 0; //must reset sensor for an mbed reset to work
+    // wait(0.1);
+    // shdn = 1;
+    // wait(0.1);
     /* init the 53L0A1 board with default values */
-    status = board->init_board();
-    while (status) {
-        pc.printf("Failed to init board! \r\n");
-        led1 = 1;
-        status = board->init_board();
-    }
-    led_state = STOPPED;
-    t2.start(LED_thread);
+    // status = board->init_board();
+    // while (status) {
+    //     pc.printf("Failed to init board! \r\n");
+    //     led1 = 1;
+    //     status = board->init_board();
+    // }
+    // led_state = STOPPED;
+    // t2.start(LED_thread);
     t1.start(blue_thread);
     while(1) {
-        printf("checking distance\n");
-        status = -1;
-        while(status == -1) { //can use GPIO pin instead
-            status = board->sensor_centre->get_distance(&distance);
-        }
-        if (status == VL53L0X_ERROR_NONE) {
-            printf("D=%ld mm\r\n", distance);
-                if (distance < 10) {
-                    lock.lock();
-                    motorR.speed(0);
-                    motorL.speed(0);
-                    printf("stopped");
-                    led_state = STOPPED;
-                    wait(1);
-                    /*motorR.speed(0.35);
-                    motorL.speed(-0.35);
-                    led_state = REVERSE;
-                    wait(1); 
-                    motorR.speed(0);
-                    motorL.speed(0);
-                    led_state = STOPPED; */
-                } else {
-                    lock.unlock();
-                }
-            }
+        // printf("checking distance\n");
+        // status = -1;
+        // while(status == -1) { //can use GPIO pin instead
+        //     status = board->sensor_centre->get_distance(&distance);
+        // }
+        // if (status == VL53L0X_ERROR_NONE) {
+        //     printf("D=%ld mm\r\n", distance);
+        //         if (distance < 10) {
+        //             lock.lock();
+        //             motorR.speed(0);
+        //             motorL.speed(0);
+        //             printf("stopped");
+        //             led_state = STOPPED;
+        //             wait(1);
+        //             /*motorR.speed(0.35);
+        //             motorL.speed(-0.35);
+        //             led_state = REVERSE;
+        //             wait(1);
+        //             motorR.speed(0);
+        //             motorL.speed(0);
+        //             led_state = STOPPED; */
+        //         } else {
+        //             lock.unlock();
+        //         }
+        //     }
         }
 }
