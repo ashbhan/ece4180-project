@@ -40,9 +40,9 @@ Syntax highlighted code block
 
 First, we assembled the robot chassis following this [guide](https://learn.sparkfun.com/tutorials/assembly-guide-for-redbot-with-shadow-chassis?_ga=2.58909997.1625431823.1620084318-527652614.1619801898). We then added 2 DC motors as our main actuators and 4 AA batteries along with the USB battery pack for our main power source using double sided tape. We then assembled the circuit on two breadboards following the following schematic.
 
-<img src="images/schematic.jpeg" alt="hi" class="inline"/>
+<img src="images/schematic.png" alt="hi" class="inline"/>
 
-We then mounted the breadboards to the frame using more tape and zip ties.
+We then mounted the breadboards to the frame using more tape and zip ties. We then put the batteries in the holder and put that inside the robot, and connected that power to the breadboard. Finally, we connected the USB cable to power the 5V rail from the USB battery pack.
 
 ### Videos
 
