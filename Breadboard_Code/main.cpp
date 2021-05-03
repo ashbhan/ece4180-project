@@ -50,7 +50,7 @@ union f_or_char {
     char  c[4];
 };
 
-void LED_thread() {
+void LED_thread() { //LED states to indicate direction/motion
     while(1){
         switch (led_state) {
             case STOPPED: 
@@ -112,28 +112,24 @@ void blue_thread(){
                         //printf("X = %f  Y = %f  Z = %f\n\r",x.f, y.f, z.f);
                         //right_led = left_led = forward_led = reverse_led = 0.0;
                         if ((x.f<=0.5) && (y.f>=0.5)) { //phone turned right
-                            RightSpeed = 0.0; //Scale to 0.0 to 1.0 for PWM so /10.0
-                            LeftSpeed = -y.f/10.0;
-                            motorR.speed(0.5);
-                            motorL.speed(0.5);
-                            led_state = FORWARD;
-                        }
-                        else if ((x.f<=0.5) && (y.f<=-0.5)) { //phone turned left
-                            RightSpeed = -y.f/10.0; //Scale to 0.0 to 1.0 for PWM so /10.0
-                            LeftSpeed = 0.0;
-                            motorR.speed(-0.5);
-                            motorL.speed(-0.5);
-                            led_state = REVERSE;
-                        }
-                        else if ((x.f<=0.5 && x.f >= -0.5) && (y.f<=0.5 && y.f>=-0.5) && (z.f <= -0.5)){ //forward
                             motorR.speed(-0.5);
                             motorL.speed(0.5);
                             led_state = TURNING;
                         }
-                        else if ((x.f<=0.5 && x.f >= -0.5) && (y.f<=0.5 && y.f>=-0.5) && (z.f >= 0.5)){ //reverse
+                        else if ((x.f<=0.5) && (y.f<=-0.5)) { //phone turned left
                             motorR.speed(0.5);
                             motorL.speed(-0.5);
-                            led_state = TURNING;                            
+                            led_state = TURNING;  
+                        }
+                        else if ((x.f<=0.5 && x.f >= -0.5) && (y.f<=0.5 && y.f>=-0.5) && (z.f <= -0.5)){ //forward
+                            motorR.speed(0.5);
+                            motorL.speed(0.5);
+                            led_state = FORWARD;
+                        }
+                        else if ((x.f<=0.5 && x.f >= -0.5) && (y.f<=0.5 && y.f>=-0.5) && (z.f >= 0.5)){ //reverse
+                            motorR.speed(-0.5);
+                            motorL.speed(-0.5);
+                            led_state = REVERSE;
                         }
                         else {
                             RightSpeed = 0.0;
@@ -186,7 +182,7 @@ int main()
         }
         if (status == VL53L0X_ERROR_NONE) {
             printf("D=%ld mm\r\n", distance);
-                if (distance < 200) {
+                if (distance < 200) { //if distance is less than 200mm, reverse for 1 second.
                     lock.lock();
                     motorR.speed(0);
                     motorL.speed(0);
