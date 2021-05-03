@@ -33,7 +33,7 @@ Motor motorL(PWMB, p8, p7);
 #define BLUE_RX p27 //p14
 #define BLUE_TX p28 //p13
 Serial bluemod(p13, p14);
-uLCD_4DGL uLCD(p13, p14, p29);
+uLCD_4DGL uLCD(p28, p27, p29);
 
 
 

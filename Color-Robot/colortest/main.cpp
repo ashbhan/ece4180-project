@@ -21,6 +21,7 @@ Thread t2;
 Thread t3;
 
 float r, g, b;
+volatile bool white = false;
 
 //C union can convert 4 chars to a float - puts them in same location in memory
 //trick to pack the 4 bytes from Bluetooth serial port back into a 32-bit float
@@ -45,7 +46,11 @@ void lcd_color() {
         b = color_sensor_blue();
         int color = 256 * 256 * r + 256 * g + b;
         lcd_lock.lock();
-        uLCD.filled_circle(60, 50, 30, color);
+        if(!white) {
+            uLCD.filled_rectangle(0, 0, 128, 128, WHITE);
+            white = true;
+        }
+        uLCD.filled_circle(64, 64, 30, color);
         lcd_lock.unlock();
     }
 }
@@ -60,6 +65,7 @@ void blue_thread(){
     while(1) {
         printf("in blue loop\n");
         if (bluemod.readable()) {
+            lcd_lock.lock();
             t.stop(); //don't know if this is necessary
             t.reset();
             t.start();
@@ -112,7 +118,9 @@ void blue_thread(){
                         }
                     }
                 }
+                
             }
+        lcd_lock.unlock();
         } else if (t.read() > 5) {
             motorR.speed(0);
             motorL.speed(0);
@@ -158,9 +166,16 @@ int main()
     } */
     
     //distance_check.attach(&check_distance, 5);
+    pc.printf("Start of program\n");
     color_sensor_init();
+    pc.printf("Color sense init\n");
+    pc.printf("lcd init\n");
     t1.start(blue_thread);
+    pc.printf("bluethread start\n");
     //t2.start(led_thread);
     t3.start(lcd_color);
-    while(1) {}
+    pc.printf("lcdthread start\n");
+    while(1) {
+        //pc.printf("loop\n");
+    }
 }
