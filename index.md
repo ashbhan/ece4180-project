@@ -19,8 +19,24 @@ Syntax highlighted code block
 1. Numbered
 2. List
 
+### Materials
 
-### Assembly Instructions and Materials
+- Sparkfun Shadow Robot Chassis
+- 2x DG01D Motors
+- 4x AA Batteries with Holder
+- USB Battery Pack
+- USB Micro B Cable
+- 2x Breadboard
+- mBed
+- uLCD-144G2 LCD Screen
+- Bluefruit Bluetooth Module
+- TCS34725 Color Sensor
+- VL53L0X Time of Flight Sensor
+- TB6612FNG H-Bridge
+- Barrel Jack
+- Power Switch
+
+### Assembly Instructions
 
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
@@ -41,3 +57,5 @@ Markdown is a lightweight and easy-to-use syntax for styling your writing. It in
 <img src="images/4.jpeg" alt="hi" class="inline"/>
 
 ### Resources
+- [Project GitHub](https://github.com/ashbhan/ece4180-project)
+- [mBed Documentation](https://os.mbed.com/handbook/Homepage)
