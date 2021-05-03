@@ -20,7 +20,7 @@ Syntax highlighted code block
 2. List
 
 
-### Assembly Instructions
+### Assembly Instructions and Materials
 
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
@@ -30,14 +30,14 @@ Markdown is a lightweight and easy-to-use syntax for styling your writing. It in
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/JGAJsVZTDLc" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-**Bold** and _Italic_ and `Code` text
-
 ### Photos
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+<img src="images/1.jpeg" alt="hi" class="inline"/>
 
+<img src="images/2.jpeg" alt="hi" class="inline"/>
+
+<img src="images/3.jpeg" alt="hi" class="inline"/>
+
+<img src="images/4.jpeg" alt="hi" class="inline"/>
 
 ### Resources
