@@ -22,7 +22,7 @@ Syntax highlighted code block
 ### Materials
 
 - [Sparkfun Shadow Robot Chassis](https://www.sparkfun.com/products/13301)
-- 2x [DG01D Motors] https://www.sparkfun.com/products/13302
+- 2x [DG01D Motors](https://www.sparkfun.com/products/13302)
 - 4x AA Batteries with [Holder](https://www.sparkfun.com/products/9835)
 - USB Battery Pack
 - USB Micro B Cable
