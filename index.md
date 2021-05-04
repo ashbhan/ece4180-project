@@ -2,7 +2,18 @@
 
 ### Overview
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Text
+
+### Features
+
+- Robust Drivetrain System
+- RTOS Thread-based Programming
+- Easy Remote Control Using Phone Accelerometer
+<img src="images/3.gif" alt="hi" class="inline"/>
+- Color Sensor and uLCD Display
+<img src="images/2.gif" alt="hi" class="inline"/>
+- Optional Distance Sensor
+<img src="images/1.gif" alt="hi" class="inline"/>
 
 ### Materials
 
