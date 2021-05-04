@@ -2,7 +2,7 @@
 
 ### Overview
 
-Text
+The purpose of this project was to make a remote controlled robot using our phone that is able to detect the color of its surroundings. The robot accomplished those well, including being easy to drive using a phone app and bluetooth. We sent the color captured from the color sensor to a LCD on the top of the robot. We also investiaged having it use a distance sensor to control stopping in front of obstacles, but due to a conflict of limited serial and I2C pins, that feature is not possible while also having the LCD enabled.
 
 ### Features
 
@@ -63,5 +63,5 @@ We then mounted the breadboards to the frame using more tape and zip ties. We th
 
 ### Future Work
 - Use a 5V regulator instead of USB battery pack for 5V rail
-- Use a more accurate and better color sensor able to better capture color
-- Use a better distance sensor that more easily integrates into our pinout
+- Use a more accurate color sensor able to better capture color
+- Use a better distance sensor that more easily integrates into our mBed pinout
